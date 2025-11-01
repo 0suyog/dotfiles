@@ -1,0 +1,21 @@
+# general.import = ["./tokyo-night-storm.toml"]
+[window]
+# opacity is 
+opacity=1
+# no border and title
+decorations='None'
+# apps cant change the title of terminal
+dynamic_title=false
+
+[cursor]
+style={shape="Beam",blinking="Off"}
+[font]
+# font is IsovekaTerm
+size=11.5
+normal = {family="IosevkaTermNerdFont", style = "Regular"}
+
+[mouse]
+# mouse is hidden when typing
+hide_when_typing=true
+
+
