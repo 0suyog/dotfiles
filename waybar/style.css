@@ -32,6 +32,10 @@ window#waybar {
     border-top: 2px solid #c9545d;
 }
 
+#workspaces button.active {
+    border-top: 1px solid #c9545d;
+}
+
 #mode {
     background: #64727D;
     border-bottom: 3px solid white;
