@@ -1,4 +1,4 @@
-# general.import = ["./tokyo-night-storm.toml"]
+general.import = ["./tokyo-night-storm.toml"]
 [window]
 # opacity is 
 opacity=1

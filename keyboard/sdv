@@ -1,0 +1,81 @@
+// Suyog's Dvorak, by Suyog Dahal 
+xkb_symbols "sdv" {
+
+    include "us(dvorak)"
+    name[Group1] = "English (Suyog's Dvorak)";
+
+    //             Unmodified       Shift           AltGr            Shift+AltGr
+    // symbols row, left side
+    key <TLDE> { [ grave,          asciitilde,     dead_tilde                  ] };
+    key <AE01> { [ asciicircum,    1                                     ] };
+    key <AE02> { [ bracketleft,    2,              currency                    ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE03> { [ braceleft,      3,              cent                        ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE04> { [ parenleft,      4,              yen                         ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE05> { [ equal,          5,              EuroSign                    ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE06> { [ exclam,         6,              sterling                    ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+
+    // symbols row, right side
+    key <AE07> { [ parenright,   7                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE08> { [ braceright,     8,              onehalf                     ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE09> { [ bracketright,     9                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE10> { [ plus,           0                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE11> { [ ampersand,      asterisk,              exclamdown,      U2E18      ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };  // reversed interrobang
+    key <AE12> { [ numbersign,     at,          dead_grave                  ] };
+
+    // upper row, left side
+    key <AD01> { [ semicolon,      colon,          dead_diaeresis              ] };
+    key <AD02> { [ comma,          less,           guillemotleft,   U201C      ] };
+    key <AD03> { [ period,         greater,        guillemotright,  U201D      ] };
+    key <AD04> { [ p,              P,              paragraph,       section    ] };
+    key <AD05> { [ y,              Y,              udiaeresis,      Udiaeresis ] };
+
+    // upper row, right side
+    key <AD08> { [ c,              C,              ccedilla,        Ccedilla   ] };
+    key <AD09> { [ r,              R,              registered,      trademark  ] };
+    key <AD11> { [ slash,          question,       questiondown,    U203D      ] };  // interrobang
+    key <AD12> { [ percent,        dollar,    dead_circumflex, dead_caron ] };
+
+    // home row, left side
+    replace key <CAPS> { [ Escape ], type[group1] = "ONE_LEVEL" };
+    key <AC01> { [ a,              A,              aring,           Aring      ] };
+    key <AC02> { [ o,              O,              oslash,          Oslash     ] };
+    key <AC03> { [ e,              E,              ae,              AE         ] };
+    key <AC04> { [ u,              U,              eacute,          Eacute     ] };
+
+    // home row, right side
+    key <AC06> { [ d,              D,              eth,             ETH        ] };
+    key <AC07> { [ h,              H,              dead_acute                  ] };
+    key <AC08> { [ t,              T,              thorn,           THORN      ] };
+    key <AC09> { [ n,              N,              ntilde,          Ntilde     ] };
+    key <AC10> { [ s,              S,              ssharp,          U1E9E      ] };
+    key <AC11> { [ minus,          underscore,     hyphen,          endash     ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <BKSL> { [ backslash,      bar                                         ] };
+
+    // lower row, left side
+//	 replace key <LFSH> { [ Control_L ],  type[group1] = "ONE_LEVEL"  };
+    key <AB01> { [ apostrophe,     quotedbl,       dead_acute                  ] };
+	 
+	 // Space row
+ //    replace key <LCTL> { [ Caps_Lock ] };
+ replace key <LALT>  { [ Shift_L ] };
+
+	 //modifiers
+//replace modifier_map none { };
+//    modifier_map Lock { <LCTL> };
+//    modifier_map Control { <LFSH> };
+//    modifier_map Shift { <RTSH> };
+   modifier_map Shift { <LALT> };
+//   modifier_map Mod2 { <NMLK> };
+//   modifier_map Mod5 { <LVL3> };
+//   modifier_map Control { <RCTL> };
+//   modifier_map Mod1 { <RALT> };
+//   modifier_map Mod4 { <LWIN> };
+//   modifier_map Mod4 { <RWIN> };
+//   modifier_map Mod3 { <LVL5> };
+//   modifier_map Mod1 { <ALT> };
+//   modifier_map Mod1 { <META> };
+//   modifier_map Mod4 { <SUPR> };
+
+    // do NOT hardcode this switch; use lv3:ralt_switch option instead!
+    //include "level3(ralt_switch)"
+};

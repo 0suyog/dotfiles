@@ -677,7 +677,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         gopls = {},
         pyright = {},
         postgres_lsp = {},
@@ -763,7 +763,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, js = true, jsx = true, ts = true, tsx = true }
+        local disable_filetypes = { c = true, cpp = false, js = true, jsx = true, ts = true, tsx = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -843,7 +843,7 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-
+        ['<C-g>'] = { 'select_and_accept', 'fallback' },
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -1034,19 +1034,20 @@ require('lazy').setup({
 -- vim: ts=2 sts=2 sw=2 et
 --
 -- custom keybinds
-vim.keymap.set('n', 'k', 'gk', { noremap = true, silent = true })
-vim.keymap.set('n', 'j', 'gj', { noremap = true, silent = true })
-vim.keymap.set('v', 'k', 'gk', { noremap = true, silent = true })
-vim.keymap.set('v', 'j', 'gj', { noremap = true, silent = true })
-vim.keymap.set('n', '^', 'g^', { noremap = true, silent = true })
-vim.keymap.set('v', '^', 'g^', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>$', '$', { noremap = true, silent = true })
-vim.keymap.set('n', '$', 'g$', { noremap = true, silent = true })
-vim.keymap.set('v', '<leader>$', '$', { noremap = true, silent = true })
-vim.keymap.set('v', '$', 'g$', { noremap = true, silent = true })
+-- vim.keymap.set('n', 'k', 'gk', { noremap = true, silent = true })
+-- vim.keymap.set('n', 'j', 'gj', { noremap = true, silent = true })
+-- vim.keymap.set('v', 'k', 'gk', { noremap = true, silent = true })
+-- vim.keymap.set('v', 'j', 'gj', { noremap = true, silent = true })
+-- vim.keymap.set('n', '^', 'g^', { noremap = true, silent = true })
+-- vim.keymap.set('v', '^', 'g^', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>$', '$', { noremap = true, silent = true })
+-- vim.keymap.set('n', '$', 'g$', { noremap = true, silent = true })
+-- vim.keymap.set('v', '<leader>$', '$', { noremap = true, silent = true })
+-- vim.keymap.set('v', '$', 'g$', { noremap = true, silent = true })
+vim.keymap.set('i', '<C-h>', '<Esc>cb<Del>', { noremap = true, silent = false })
 -- custom options
-vim.opt.wrap = true
-vim.opt.linebreak = true
+vim.opt.wrap = false
+vim.opt.linebreak = false
 vim.opt.breakat = ' '
 --
 --

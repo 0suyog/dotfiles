@@ -1,0 +1,42 @@
+general { output_format="i3bar"
+	colors=true
+	interval=5
+}
+
+order += "time"
+order += "battery 0"
+order += "wireless wlo1"
+order += "volume master"
+order += "cpu_usage"
+
+battery 0 {
+                   format = "%status %percentage"
+                   format_down = "no battery"
+                   status_chr = "⚡ chr"
+                   status_bat = "bat"
+                   status_unk = "unk"
+                   status_full = "full"
+                   status_idle = "idle"
+                   path = "/sys/class/power_supply/BAT%d/uevent"
+                   low_threshold = 10
+           }
+wireless wlo1 {
+	format_up="%quality at %essid "
+}
+
+volume master {
+	format = "%volume"
+	format_muted = "muted"
+}
+
+time {
+	format = "%b-%d-%a %r"		
+}
+
+cpu_usage {
+  format = "all: %usage CPU_0: %cpu0 CPU_1: %cpu1"
+  max_threshold = "75"
+  format_above_threshold = "Warning above threshold: %usage"
+  degraded_threshold = "25"
+  format_above_degraded_threshold = "Warning above degraded threshold: %usage"
+}

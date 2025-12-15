@@ -11,7 +11,7 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { ' a', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
     event_handlers = {
@@ -32,7 +32,7 @@ return {
       },
       window = {
         mappings = {
-          ['\\'] = 'close_window',
+          [' a'] = 'close_window',
         },
       },
     },
