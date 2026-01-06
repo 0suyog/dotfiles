@@ -30,7 +30,6 @@ function FormatText(){
   local statusIcon
   local batteryIcon=$BATTERY100
   local color=$NORMALCOLOR
-  local color=$NORMALCOLOR
   if [[ $status == "pending-charge" ]];then
 	 statusIcon=$PLUGGEDIN
   elif [[ $status == "charging" ]]; then

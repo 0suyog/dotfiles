@@ -17,3 +17,9 @@ markup=pango
 command=~/.config/i3blocks/scripts/wifi_status.sh
 interval=3
 markup=pango
+
+[sound]
+command=~/.config/i3blocks/scripts/sound.sh
+interval=once
+signal=10
+markup=pango

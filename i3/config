@@ -32,7 +32,7 @@ exec --no-startup-id dex --autostart --environment i3
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 
-set $refresh_i3blocks killall -SIGUSR1 i3blocks
+set $refresh_i3blocks pkill -SIGRTMIN+10 i3blocks
 # Use pactl to adjust volume in PulseAudio.
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3blocks
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3blocks
@@ -156,6 +156,10 @@ bindsym $mod+Shift+R restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+E exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
+# scratchpad 
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -193,4 +197,8 @@ bindsym Mod1+Up exec brightnessctl s 5%+
 bindsym Mod1+Down exec brightnessctl s 5%-
 
 exec_always --no-startup-id feh --randomize --bg-scale ~/Pictures/wallpapers/*
+exec --no-startup-id picom
+bindsym Print exec --no-startup-id spectacle -r
+
+
 

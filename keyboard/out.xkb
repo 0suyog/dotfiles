@@ -1210,7 +1210,7 @@ xkb_compatibility "complete" {
     };
 };
 
-xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)" {
+xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)" {
 
     name[group1]="English (Suyog's Dvorak)";
 
@@ -1238,7 +1238,7 @@ xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)
     };
     key <AE07> {
         type= "FOUR_LEVEL_ALPHABETIC",
-        symbols[Group1]= [    bracketright,               7,        NoSymbol,        NoSymbol ]
+        symbols[Group1]= [      parenright,               7,        NoSymbol,        NoSymbol ]
     };
     key <AE08> {
         type= "FOUR_LEVEL_ALPHABETIC",
@@ -1246,7 +1246,7 @@ xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)
     };
     key <AE09> {
         type= "FOUR_LEVEL_ALPHABETIC",
-        symbols[Group1]= [      parenright,               9,        NoSymbol,        NoSymbol ]
+        symbols[Group1]= [    bracketright,               9,        NoSymbol,        NoSymbol ]
     };
     key <AE10> {
         type= "FOUR_LEVEL_ALPHABETIC",
@@ -1260,10 +1260,7 @@ xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)
         type= "FOUR_LEVEL",
         symbols[Group1]= [      numbersign,              at,      dead_grave,        NoSymbol ]
     };
-    key <BKSP> {
-        type= "CTRL+ALT",
-        symbols[Group1]= [       BackSpace,       BackSpace,        NoSymbol,        NoSymbol, Terminate_Server ]
-    };
+    key <BKSP> {         [       BackSpace,       BackSpace ] };
     key  <TAB> {         [             Tab,    ISO_Left_Tab ] };
     key <AD01> {
         type= "FOUR_LEVEL",
@@ -1314,7 +1311,7 @@ xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)
         symbols[Group1]= [         percent,          dollar, dead_circumflex,      dead_caron ]
     };
     key <RTRN> {         [          Return ] };
-    key <LCTL> {         [       Caps_Lock ] };
+    key <LCTL> {         [       Control_L ] };
     key <AC01> {
         type= "FOUR_LEVEL_ALPHABETIC",
         symbols[Group1]= [               a,               A,           aring,           Aring ]
@@ -1657,9 +1654,8 @@ xkb_symbols "pc+sdv+inet(evdev)+group(alt_shift_toggle)+terminate(ctrl_alt_bksp)
     key <I253> {         [  XF86DisplayOff ] };
     key <I254> {         [        XF86WWAN ] };
     key <I255> {         [      XF86RFKill ] };
-	 clear Shift;
-    modifier_map Lock { <LCTL> };
-    modifier_map Control { <LFSH> };
+    modifier_map Control { <LCTL> };
+    // modifier_map Shift { <LFSH> };
     modifier_map Shift { <RTSH> };
     modifier_map Shift { <LALT> };
     modifier_map Mod2 { <NMLK> };
