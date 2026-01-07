@@ -5,7 +5,7 @@ color=#F79494
 
 # Update time every 5 seconds
 [time]
-command=date +%T
+command=date +"%+H:%+M %a %+d %b %Y"
 interval=5
 
 [battery]
