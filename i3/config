@@ -200,5 +200,7 @@ exec_always --no-startup-id feh --randomize --bg-scale ~/Pictures/wallpapers/*
 exec --no-startup-id picom
 bindsym Print exec --no-startup-id spectacle -r
 
+for_window[title="Figure*"] floating enable
+for_window[title="*Matplotlib*"] floating enable
 
 

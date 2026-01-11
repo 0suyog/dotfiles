@@ -877,7 +877,6 @@ require('lazy').setup({
   -- Terminal toggler
   -- terminalToggler = require 'custom/plugins/toggleterminal',
 
-  vim.keymap.set('n', '<leader>t', require('custom/plugins/toggleterminal').toggle),
   -- map
 
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -918,8 +917,31 @@ require('lazy').setup({
 --   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), mode, false)
 -- end
 --
--- vim.keymap.set('i', '<C-h>', '<Esc>cb<Del>', { noremap = true, silent = false })
--- vim.keymap.set('n', 's', 'cl', { noremap = true, silent = false })
+vim.keymap.set('i', '<C-h>', '<Esc>cb<Del>', { noremap = true, silent = false })
+vim.keymap.set('n', 's', 'cl', { noremap = true, silent = false })
+
+vim.opt.shellcmdflag = '-lc'
+
+-- run code in terminal
+local toggleTerminal = require 'custom.plugins.toggleterminal'
+vim.keymap.set('n', '<leader>t', toggleTerminal.toggle)
+
+vim.keymap.set('n', '<leader>r', function()
+  local fileName = vim.api.nvim_buf_get_name(0)
+  local fileType = vim.bo.filetype
+  if fileName == '' then
+    print 'No File Open in Current Buffer'
+    return
+  end
+
+  if fileType ~= 'python' then
+    print 'Can only run python files for now'
+    return
+  end
+  toggleTerminal.toggle()
+  vim.cmd('terminal! python ' .. vim.fn.shellescape(fileName))
+end, {})
+
 -- vim.keymap.set('v', '<leader>l', ':lua<CR>')
 -- -- custom options
 -- vim.opt.wrap = false
