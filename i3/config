@@ -41,6 +41,10 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 bindsym Mod1+Left exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3blocks
 bindsym Mod1+Right exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3blocks
 
+# exec --no-startup-id bash -c '
+#   pactl subscribe | while IFS= read -r _; do
+# '
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
@@ -202,5 +206,7 @@ bindsym Print exec --no-startup-id spectacle -r
 
 for_window[title="Figure*"] floating enable
 for_window[title="*Matplotlib*"] floating enable
+for_window[title="LearnOpenglBySuyog"] floating enable
+assign [class="Telegram"] workspace $ws4
 
-
+for_window[class="feh"] floating enable

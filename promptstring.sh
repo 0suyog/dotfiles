@@ -56,10 +56,9 @@ get_ps1(){
 FIRSTHALF=$(getFirstHalf $LIGHTORANGE)
 SECONDHALF=$(getSecondHalf $LIGHTGREEN $ORANGE )
 
-printf "%b%b" "$FIRSTHALF""$SECONDHALF"
+printf "$FIRSTHALF""$SECONDHALF"
 }
 
-# PS1="$get_ps1" 
 
 PS1='$(get_ps1)' 
 

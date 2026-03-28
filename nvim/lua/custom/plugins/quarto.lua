@@ -1,7 +1,7 @@
 return {
   {
     'quarto-dev/quarto-nvim',
-    ft = { 'quarto', 'md' },
+    ft = { 'quarto', 'markdown' },
     dependencies = {
       'jmbuhr/otter.nvim',
       'nvim-treesitter/nvim-treesitter',

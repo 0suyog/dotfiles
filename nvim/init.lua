@@ -72,6 +72,8 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+-- explicitly tell which version of python to use
+vim.g.python3_host_prog = '/usr/local/bin/python3.13'
 
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -551,12 +553,14 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         gopls = {},
+        tailwindcss = {},
         pyright = {
           settings = {
             python = {
               analysis = {
                 diagnosticSeverityOverrides = {
                   reportUnusedExpression = 'none',
+                  reportOptionalMemberAccess = 'none',
                 },
               },
             },
@@ -588,6 +592,18 @@ require('lazy').setup({
           },
         },
       }
+
+      vim.lsp.config.cmake_language_server = {
+        cmd = { 'cmake-language-server' },
+        filetypes = { 'cmake' },
+        root_dir = vim.fs.root(0, { 'CMakeLists.txt', 'CMakeLists.cmake' }),
+      }
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'cmake',
+        callback = function(args)
+          vim.lsp.enable('cmake_language_server', { bufnr = args.buf })
+        end,
+      })
 
       -- Ensure the servers and tools above are installed
       --
@@ -765,14 +781,39 @@ require('lazy').setup({
     },
   },
 
-  {
-    'tiagovla/tokyodark.nvim',
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is.
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      require 'tokyodark' -- calling setup is optional
-      vim.cmd [[colorscheme tokyodark]]
+      ---@diagnostic disable-next-line: missing-fields
+      require('tokyonight').setup {
+        styles = {
+          comments = { italic = false }, -- Disable italics in comments
+        },
+      }
+
+      -- Load the colorscheme here.
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.cmd.colorscheme 'tokyonight-night'
+      -- overwriting comment and linenumbers colors
+      vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#7a7a73', bold = true })
+      vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#7a7a73', bold = true })
     end,
   },
+
+  -- {
+  --   'tiagovla/tokyodark.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     require 'tokyodark' -- calling setup is optional
+  --     vim.cmd [[colorscheme tokyodark]]
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -831,10 +872,10 @@ require('lazy').setup({
           enable = true,
           set_jumps = false,
           goto_next_start = {
-            ['<leader>c'] = { query = '@block.inner' },
+            ['<leader>c'] = { query = '@block.inner', desc = 'Go to next fenced code block' },
           },
           goto_previous_start = {
-            ['<leader>C'] = { query = '@block.inner' },
+            ['<leader>C'] = { query = '@block.inner', desc = 'Go to previous fenced code block' },
           },
         },
         select = {
@@ -873,10 +914,8 @@ require('lazy').setup({
   require 'custom.plugins.molten',
   require 'custom.plugins.otter',
   require 'custom.plugins.quarto',
-  require 'custom.plugins.jupytext',
-  -- Terminal toggler
-  -- terminalToggler = require 'custom/plugins/toggleterminal',
-
+  require 'custom.plugins.nvim-ghost',
+  -- require 'custom.plugins.jupytext',
   -- map
 
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -934,20 +973,45 @@ vim.keymap.set('n', '<leader>r', function()
     return
   end
 
-  if fileType ~= 'python' then
-    print 'Can only run python files for now'
+  if fileType == 'go' then
+    toggleTerminal.toggle()
+    vim.cmd 'terminal! go run .'
+  end
+
+  if fileType == 'python' then
+    toggleTerminal.toggle()
+    vim.cmd('terminal! python ' .. vim.fn.shellescape(fileName))
     return
   end
-  toggleTerminal.toggle()
-  vim.cmd('terminal! python ' .. vim.fn.shellescape(fileName))
+
+  print 'Can only run python or go files for now'
 end, {})
 
--- vim.keymap.set('v', '<leader>l', ':lua<CR>')
--- -- custom options
--- vim.opt.wrap = false
--- vim.opt.linebreak = false
--- vim.opt.breakat = ' '
--- --
+vim.keymap.set('v', '<leader>l', ':lua<CR>')
+-- custom options
+vim.opt.wrap = false
+vim.opt.linebreak = false
+vim.opt.breakat = ' '
+
+vim.lsp.config('vtsls', {
+  cmd = { 'vtsls', '--stdio' },
+  filetypes = {
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+  },
+  root_markers = {
+    'tsconfig.json',
+    'jsconfig.json',
+    'package.json',
+    '.git',
+  },
+})
+
+vim.lsp.enable 'vtsls'
+
+--
 -- --
 -- -- Molten nvim
 --
@@ -962,7 +1026,7 @@ end, {})
 -- vim.keymap.set('v', '<leader>m', ':MoltenEvaluateVisual<CR>', { noremap = true, silent = true, desc = 'Evaluate Selected Code' })
 --
 -- vim.g.molten_auto_open_output = false
--- vim.g.molten_image_provider = ''
+-- vim.g.molten_image_provider = 'image.nvim'
 --
 -- --otter nvim
 -- local otter = require 'otter'
@@ -995,6 +1059,7 @@ end, {})
 -- }
 -- otter.activate()
 --
+
 -- local runner = require 'quarto.runner'
 -- vim.keymap.set('n', '<localleader>rc', runner.run_cell, { desc = 'run cell', silent = true })
 -- vim.keymap.set('n', '<localleader>ra', runner.run_above, { desc = 'run cell and above', silent = true })
@@ -1004,6 +1069,7 @@ end, {})
 -- vim.keymap.set('n', '<localleader>RA', function()
 --   runner.run_all(true)
 -- end, { desc = 'run all cells of all languages', silent = true })
+
 --
 -- -- automatically import output chunks from a jupyter notebook
 -- -- tries to find a kernel that matches the kernel in the jupyter notebook
@@ -1056,9 +1122,9 @@ end, {})
 --   end,
 -- })
 --
--- -- Provide a command to create a blank new Python notebook
--- -- note: the metadata is needed for Jupytext to understand how to parse the notebook.
--- -- if you use another language than Python, you should change it in the template.
+-- Provide a command to create a blank new Python notebook
+-- note: the metadata is needed for Jupytext to understand how to parse the notebook.
+-- if you use another language than Python, you should change it in the template.
 -- local default_notebook = [[
 --   {
 --     "cells": [
@@ -1091,7 +1157,7 @@ end, {})
 --     "nbformat_minor": 5
 --   }
 -- ]]
---
+-- --
 -- local function new_notebook(filename)
 --   local path = filename .. '.ipynb'
 --   local file = io.open(path, 'w')
@@ -1111,14 +1177,8 @@ end, {})
 --   complete = 'file',
 -- })
 --
--- local jupytext = require 'jupytext'
---
--- jupytext.setup {
---   custom_language_formatting = {
---     python = {
---       extension = 'md',
---       style = 'markdown',
---       force_ft = 'markdown', -- you can set whatever filetype you want here
---     },
---   },
+-- require('jupytext').setup {
+--   style = 'markdown',
+--   output_extension = 'md',
+--   force_ft = 'markdown',
 -- }
