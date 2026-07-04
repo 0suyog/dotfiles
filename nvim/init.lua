@@ -225,8 +225,8 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch' },
-        { '<leader>t', group = '[T]erminal' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>c', group = '[C]alculate', mode = { 'v' } },
       },
     },
   },
@@ -604,6 +604,21 @@ require('lazy').setup({
           vim.lsp.enable('cmake_language_server', { bufnr = args.buf })
         end,
       })
+      vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
+        callback = function()
+          local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+          if not normal.bg then
+            return
+          end
+          io.write(string.format('\x1b]11;#%06x\x1b\\', normal.bg))
+        end,
+      })
+
+      vim.api.nvim_create_autocmd('UILeave', {
+        callback = function()
+          io.write '\x1b]111\x1b\\'
+        end,
+      })
 
       -- Ensure the servers and tools above are installed
       --
@@ -871,12 +886,6 @@ require('lazy').setup({
         move = {
           enable = true,
           set_jumps = false,
-          goto_next_start = {
-            ['<leader>c'] = { query = '@block.inner', desc = 'Go to next fenced code block' },
-          },
-          goto_previous_start = {
-            ['<leader>C'] = { query = '@block.inner', desc = 'Go to previous fenced code block' },
-          },
         },
         select = {
           enable = true,
@@ -914,7 +923,6 @@ require('lazy').setup({
   require 'custom.plugins.molten',
   require 'custom.plugins.otter',
   require 'custom.plugins.quarto',
-  require 'custom.plugins.nvim-ghost',
   -- require 'custom.plugins.jupytext',
   -- map
 
@@ -956,15 +964,18 @@ require('lazy').setup({
 --   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), mode, false)
 -- end
 --
-vim.keymap.set('i', '<C-h>', '<Esc>cb<Del>', { noremap = true, silent = false })
+-- vim.keymap.set('i', '<C-H>', '<Esc>cb<Del>', { noremap = true, silent = false })
+vim.keymap.set('i', '<C-Bs>', '<Esc>cb<Del>', { noremap = true, silent = false })
+-- vim.keymap.set('i', '<C-W>', '<Esc>cb<Del>', { noremap = true, silent = false })
 vim.keymap.set('n', 's', 'cl', { noremap = true, silent = false })
 
 vim.opt.shellcmdflag = '-lc'
 
--- run code in terminal
+-- open terminal with leadert
 local toggleTerminal = require 'custom.plugins.toggleterminal'
-vim.keymap.set('n', '<leader>t', toggleTerminal.toggle)
+vim.keymap.set('n', '<leader>t', toggleTerminal.toggle, { desc = 'Toggle terminal' })
 
+-- run code in terminal
 vim.keymap.set('n', '<leader>r', function()
   local fileName = vim.api.nvim_buf_get_name(0)
   local fileType = vim.bo.filetype
@@ -985,7 +996,18 @@ vim.keymap.set('n', '<leader>r', function()
   end
 
   print 'Can only run python or go files for now'
-end, {})
+end, { desc = '[R]un in terminal' })
+
+-- qalculate-visual
+local qalculateVisual = require 'custom.plugins.qalculate-visual'
+vim.keymap.set('v', '<leader>cy', function()
+  qalculateVisual.QalculateAndYank()
+  vim.api.nvim_feedkeys(vim.keycode '<C-\\><C-n>', '*', false)
+end, { desc = '[C]alculate and [Y]ank' })
+vim.keymap.set('v', '<leader>cp', function()
+  qalculateVisual.QalculateAndPaste()
+  vim.api.nvim_feedkeys(vim.keycode '<C-\\><C-n>', '*', false)
+end, { desc = '[C]alculate and [P]aste' })
 
 vim.keymap.set('v', '<leader>l', ':lua<CR>')
 -- custom options
@@ -996,8 +1018,6 @@ vim.opt.breakat = ' '
 vim.lsp.config('vtsls', {
   cmd = { 'vtsls', '--stdio' },
   filetypes = {
-    'javascript',
-    'javascriptreact',
     'typescript',
     'typescriptreact',
   },
@@ -1008,177 +1028,3 @@ vim.lsp.config('vtsls', {
     '.git',
   },
 })
-
-vim.lsp.enable 'vtsls'
-
---
--- --
--- -- Molten nvim
---
--- vim.keymap.set('n', '<leader>mi', ':MoltenInit<CR>', { noremap = true, silent = false, desc = 'Initialize kernel for molten' })
--- vim.keymap.set('n', '<leader>mr', ':MoltenReevaluateCell<CR>', { noremap = true, silent = false, desc = 'Re-Eval Current Cell' })
--- vim.keymap.set('n', '<leader>me', ':MoltenEvaluateOperator<CR>', { noremap = true, silent = true, desc = 'Evaluate with operator(Waits for operator)' })
--- vim.keymap.set('n', '<leader>ml', ':MoltenEvaluateLine<CR>', { noremap = true, silent = true, desc = 'Evaluate current line' })
--- vim.keymap.set('n', '<leader>ma', ':MoltenReevaluateAll<CR>', { noremap = true, silent = true, desc = 'Re-Eval all Cells' })
--- vim.keymap.set('n', '<leader>md', ':MoltenDelete<CR>', { noremap = true, silent = true, desc = 'Delete Cell' })
--- vim.keymap.set('n', '<leader>mo', ':noautocmd MoltenEnterOutput<CR>', { noremap = true, silent = false, desc = 'Enter Output window(regardless if its shown)' })
--- vim.keymap.set('n', '<leader>mh', ':MoltenHideOutput<CR>', { noremap = true, silent = true, desc = 'Hide Output Window' })
--- vim.keymap.set('v', '<leader>m', ':MoltenEvaluateVisual<CR>', { noremap = true, silent = true, desc = 'Evaluate Selected Code' })
---
--- vim.g.molten_auto_open_output = false
--- vim.g.molten_image_provider = 'image.nvim'
---
--- --otter nvim
--- local otter = require 'otter'
--- otter.setup {
---   lsp = {
---     diagnostic_update_events = { 'BufWritePost' },
---     root_dir = function(_, bufnr)
---       return vim.fs.root(bufnr or 0, {
---         '.git',
---         '_quarto.yml',
---         'package.json',
---       }) or vim.fn.getcwd(0)
---     end,
---   },
---   buffers = {
---     write_to_disk = false,
---     preambles = {},
---     postambles = {},
---     ignore_pattern = {
---       python = '^(%s*[%%!].*)',
---     },
---   },
---   strip_wrapping_quote_characters = { "'", '"', '`' },
---   handle_leading_whitespace = true,
---   extensions = {},
---   debug = false,
---   verbose = { -- set to false to disable all verbose messages
---     no_code_found = false, -- warn if otter.activate is called, but no injected code was found
---   },
--- }
--- otter.activate()
---
-
--- local runner = require 'quarto.runner'
--- vim.keymap.set('n', '<localleader>rc', runner.run_cell, { desc = 'run cell', silent = true })
--- vim.keymap.set('n', '<localleader>ra', runner.run_above, { desc = 'run cell and above', silent = true })
--- vim.keymap.set('n', '<localleader>rA', runner.run_all, { desc = 'run all cells', silent = true })
--- vim.keymap.set('n', '<localleader>rl', runner.run_line, { desc = 'run line', silent = true })
--- vim.keymap.set('v', '<localleader>r', runner.run_range, { desc = 'run visual range', silent = true })
--- vim.keymap.set('n', '<localleader>RA', function()
---   runner.run_all(true)
--- end, { desc = 'run all cells of all languages', silent = true })
-
---
--- -- automatically import output chunks from a jupyter notebook
--- -- tries to find a kernel that matches the kernel in the jupyter notebook
--- -- falls back to a kernel that matches the name of the active venv (if any)
--- local imb = function(e) -- init molten buffer
---   vim.schedule(function()
---     local kernels = vim.fn.MoltenAvailableKernels()
---     local try_kernel_name = function()
---       local metadata = vim.json.decode(io.open(e.file, 'r'):read 'a')['metadata']
---       return metadata.kernelspec.name
---     end
---     local ok, kernel_name = pcall(try_kernel_name)
---     if not ok or not vim.tbl_contains(kernels, kernel_name) then
---       kernel_name = nil
---       local venv = os.getenv 'VIRTUAL_ENV' or os.getenv 'CONDA_PREFIX'
---       if venv ~= nil then
---         kernel_name = string.match(venv, '/.+/(.+)')
---       end
---     end
---     if kernel_name ~= nil and vim.tbl_contains(kernels, kernel_name) then
---       vim.cmd(('MoltenInit %s'):format(kernel_name))
---     end
---     vim.cmd 'MoltenImportOutput'
---   end)
--- end
---
--- -- automatically import output chunks from a jupyter notebook
--- vim.api.nvim_create_autocmd('BufAdd', {
---   pattern = { '*.ipynb' },
---   callback = imb,
--- })
---
--- -- we have to do this as well so that we catch files opened like nvim ./hi.ipynb
--- vim.api.nvim_create_autocmd('BufEnter', {
---   pattern = { '*.ipynb' },
---   callback = function(e)
---     if vim.api.nvim_get_vvar 'vim_did_enter' ~= 1 then
---       imb(e)
---     end
---   end,
--- })
---
--- -- automatically export output chunks to a jupyter notebook on write
--- vim.api.nvim_create_autocmd('BufWritePost', {
---   pattern = { '*.ipynb' },
---   callback = function()
---     if require('molten.status').initialized() == 'Molten' then
---       vim.cmd 'MoltenExportOutput!'
---     end
---   end,
--- })
---
--- Provide a command to create a blank new Python notebook
--- note: the metadata is needed for Jupytext to understand how to parse the notebook.
--- if you use another language than Python, you should change it in the template.
--- local default_notebook = [[
---   {
---     "cells": [
---      {
---       "cell_type": "markdown",
---       "metadata": {},
---       "source": [
---         ""
---       ]
---      }
---     ],
---     "metadata": {
---      "kernelspec": {
---       "display_name": "Python 3",
---       "language": "python",
---       "name": "python3"
---      },
---      "language_info": {
---       "codemirror_mode": {
---         "name": "ipython"
---       },
---       "file_extension": ".py",
---       "mimetype": "text/x-python",
---       "name": "python",
---       "nbconvert_exporter": "python",
---       "pygments_lexer": "ipython3"
---      }
---     },
---     "nbformat": 4,
---     "nbformat_minor": 5
---   }
--- ]]
--- --
--- local function new_notebook(filename)
---   local path = filename .. '.ipynb'
---   local file = io.open(path, 'w')
---   if file then
---     file:write(default_notebook)
---     file:close()
---     vim.cmd('edit ' .. path)
---   else
---     print 'Error: Could not open new notebook file for writing.'
---   end
--- end
---
--- vim.api.nvim_create_user_command('NewNotebook', function(opts)
---   new_notebook(opts.args)
--- end, {
---   nargs = 1,
---   complete = 'file',
--- })
---
--- require('jupytext').setup {
---   style = 'markdown',
---   output_extension = 'md',
---   force_ft = 'markdown',
--- }
