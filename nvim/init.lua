@@ -796,28 +796,37 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('tokyonight').setup {
+  --       styles = {
+  --         comments = { italic = false }, -- Disable italics in comments
+  --       },
+  --     }
+  --
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --     -- overwriting comment and linenumbers colors
+  --     vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#7a7a73', bold = true })
+  --     vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#7a7a73', bold = true })
+  --   end,
+  -- },
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-      -- overwriting comment and linenumbers colors
-      vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#7a7a73', bold = true })
-      vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#7a7a73', bold = true })
+  {
+    'sainnhe/everforest',
+    priority = 1000,
+    config = function()
+      vim.g.everforest_enable_italic = true
+      vim.cmd.colorscheme 'everforest'
     end,
   },
 
@@ -831,7 +840,16 @@ require('lazy').setup({
   -- },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      highlight = {
+        pattern = [[.*<(KEYWORDS)\s*:]],
+      },
+    },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1027,4 +1045,21 @@ vim.lsp.config('vtsls', {
     'package.json',
     '.git',
   },
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'glsl' },
+  callback = function()
+    local client = vim.lsp.start({
+      name = 'suyoglslsp',
+      cmd = { '/hardDrive/suyoglslsp/suyoglslsp' },
+    }, {})
+
+    if not client then
+      vim.notify 'no cilent thingy'
+      return
+    end
+    vim.notify 'lsp should be ready'
+    vim.lsp.buf_attach_client(0, client)
+  end,
 })

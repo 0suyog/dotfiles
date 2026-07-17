@@ -1,6 +1,7 @@
 {
     "diagnostics.globals": [
-        "vim"
+        "vim",
+        "client"
     ],
     "diagnostics.disable": [
         "need-check-nil"

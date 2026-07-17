@@ -58,6 +58,9 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+Q kill
 
+# toggle sticky
+bindsym $mod+Shift+S sticky toggle
+
 # start dmenu (a program launcher)
 # bindsym $mod+e exec --no-startup-id dmenu_run
 # A more modern dmenu replacement is rofi:
