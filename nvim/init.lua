@@ -550,6 +550,7 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      --
       local servers = {
         clangd = {},
         gopls = {},
@@ -579,7 +580,7 @@ require('lazy').setup({
 
         lua_ls = {
           -- cmd = { ... },
-          -- filetypes = { ... },
+          filetypes = { 'premake', 'lua' },
           -- capabilities = {},
           settings = {
             Lua = {
@@ -893,7 +894,7 @@ require('lazy').setup({
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs',
     opts = {
-      ensure_installed = { 'bash', 'python', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go' },
+      ensure_installed = { 'bash', 'python', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go', 'glsl' },
       auto_install = true,
       highlight = {
         enable = true,
@@ -1063,3 +1064,13 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.buf_attach_client(0, client)
   end,
 })
+
+vim.filetype.add {
+  pattern = {
+    ['.*%.premake%.lua'] = 'premake',
+    ['.*%.premake5%.lua'] = 'premake',
+    ['.*%.premake'] = 'premake',
+    ['.*%.premake5'] = 'premake',
+  },
+}
+vim.treesitter.language.register('lua', 'premake')
