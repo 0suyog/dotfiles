@@ -206,6 +206,7 @@ bindsym Mod1+Down exec brightnessctl s 1%-
 exec_always --no-startup-id feh --randomize --bg-scale ~/Pictures/wallpapers/*
 exec --no-startup-id picom
 exec_always --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY
+exec --no-startup-id easyeffects -w
 
 bindsym Print exec --no-startup-id spectacle -r
 

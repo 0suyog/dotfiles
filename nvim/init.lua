@@ -829,6 +829,9 @@ require('lazy').setup({
       vim.g.everforest_enable_italic = true
       vim.cmd.colorscheme 'everforest'
     end,
+    opts = {
+      everforest_transparent_background = 1,
+    },
   },
 
   -- {
